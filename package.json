@@ -1,0 +1,45 @@
+{
+  "name": "email-disposable",
+  "description": "A regularly updated list of disposable and temporary email domains.",
+  "packageManager": "yarn@4.10.3",
+  "main": "index.js",
+  "author": {
+    "name": "Gatekeepr",
+    "url": "https://gatekeepr.ro"
+  },
+  "files": [
+    "index.js",
+    "src/",
+    "disposable.json",
+    "disposable.txt"
+  ],
+  "version": "1.0.0",
+  "devDependencies": {
+    "p-limit": "^7.2.0"
+  },
+  "type": "module",
+  "scripts": {
+    "fetch": "node src/fetch.js"
+  },
+  "homepage": "https://gatekeepr.ro",
+  "keywords": [
+    "disposable",
+    "email",
+    "temporary email",
+    "temp mail",
+    "throwaway email",
+    "fake email",
+    "email validation",
+    "email check",
+    "email verifier",
+    "email blacklist",
+    "blocklist",
+    "spam prevention",
+    "signup validation",
+    "email domains",
+    "anti-spam",
+    "anti-fraud",
+    "gatekeepr"
+  ],
+  "license": "MIT"
+}
