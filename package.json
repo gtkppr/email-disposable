@@ -13,7 +13,7 @@
     "disposable.json",
     "disposable.txt"
   ],
-  "version": "1.0.0",
+  "version": "1.0.1",
   "devDependencies": {
     "p-limit": "^7.2.0"
   },
@@ -21,7 +21,7 @@
   "scripts": {
     "fetch": "node src/fetch.js"
   },
-  "homepage": "https://gatekeepr.ro",
+  "homepage": "https://github.com/gtkppr/email-disposable",
   "keywords": [
     "disposable",
     "email",
