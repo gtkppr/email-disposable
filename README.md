@@ -68,11 +68,11 @@ npm run fetch
 
 ## License
 
-[MIT](https://opensource.org/license/mit) © 2025 [Gatekeepr](https://gatekeepr.ro).
+[MIT](https://opensource.org/license/mit) © 2025 [Gatekeepr](https://gatekeepr.io).
 
 ## About
 
-**email-disposable** is an open-source component of [Gatekeepr](https://gatekeepr.ro), a privacy-first API that blocks
+**email-disposable** is an open-source component of [Gatekeepr](https://gatekeepr.io), a privacy-first API that blocks
 fake users and platform abuse by analyzing emails, IPs, domains, and user agents in real time.
 
 
