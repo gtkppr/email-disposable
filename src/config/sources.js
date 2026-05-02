@@ -40,7 +40,7 @@ export const sources = [
 		parser: "text"
 	},
 	{
-		url: "https://raw.githubusercontent.com/tompec/disposable-email-domains/refs/heads/main/wildcard.json",
+		url: "https://raw.githubusercontent.com/tompec/disposable-email-domains/refs/heads/main/index.json",
 		parser: "json"
 	},
 	{
@@ -52,7 +52,7 @@ export const sources = [
 		parser: "text"
 	},
 	{
-		url: "https://github.com/daisy1754/jp-disposable-emails/blob/master/list.txt",
+		url: "https://raw.githubusercontent.com/daisy1754/jp-disposable-emails/master/list.txt",
 		parser: "text"
 	},
 	{
