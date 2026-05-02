@@ -1,49 +1,39 @@
-# .github/workflows/update-disposable-list.yml
 name: Update disposable email list
 
 on:
   schedule:
-    # Daily at 03:15 UTC
     - cron: "15 3 * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
 
-concurrency:
-  group: update-disposable-list
-  cancel-in-progress: false
-
 jobs:
   update:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          persist-credentials: true
 
-      - name: Enable Corepack
-        run: corepack enable
+      - run: corepack enable
 
-      - name: Install dependencies
-        run: yarn install --immutable
+      - run: yarn install --immutable
 
-      - name: Fetch latest domains
-        run: yarn fetch
+      - run: yarn fetch
 
-      - name: Commit and push changes
+      - name: Commit changes
         run: |
           git add disposable.json disposable.txt
-          
+
           if git diff --cached --quiet; then
-            echo "No disposable-domain changes."
+            echo "No changes"
             exit 0
           fi
-          
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          
+
           git commit -m "update disposable domains"
-          git push origin HEAD:main
+          git push
