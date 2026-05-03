@@ -5,8 +5,13 @@ on:
     - cron: "15 3 * * *"
   workflow_dispatch:
 
+concurrency:
+  group: update-disposable-list
+  cancel-in-progress: false
+
 permissions:
   contents: write
+  id-token: write
 
 jobs:
   update:
@@ -23,9 +28,17 @@ jobs:
 
       - run: yarn fetch
 
+      - name: Bump package version
+        run: |
+          PUBLISHED_VERSION="$(npm view email-disposable version)"
+          NEXT_VERSION="$(node -e 'const parts = process.argv[1].split(".").map(Number); if (parts.length !== 3 || parts.some(Number.isNaN)) process.exit(1); console.log(`${parts[0]}.${parts[1]}.${parts[2] + 1}`)' "$PUBLISHED_VERSION")"
+
+          npm pkg set "version=$NEXT_VERSION"
+          echo "NEXT_VERSION=$NEXT_VERSION" >> "$GITHUB_ENV"
+
       - name: Commit changes
         run: |
-          git add disposable.json disposable.txt
+          git add disposable.json disposable.txt package.json
 
           if git diff --cached --quiet; then
             echo "No changes"
@@ -35,5 +48,20 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git commit -m "update disposable domains"
+          git commit -m "update disposable domains v$NEXT_VERSION"
           git push
+
+      - uses: actions/setup-node@v6
+        with:
+          registry-url: https://registry.npmjs.org
+
+      - name: Publish package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "Missing NPM_TOKEN secret"
+            exit 1
+          fi
+
+          npm publish --access public --provenance
