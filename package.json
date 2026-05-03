@@ -41,5 +41,8 @@
     "anti-fraud",
     "gatekeepr"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/gtkppr/email-disposable"
+  }
 }
