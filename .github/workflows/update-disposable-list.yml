@@ -20,7 +20,13 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
+          fetch-depth: 0
           persist-credentials: true
+
+      - name: Sync branch
+        run: |
+          branch="${GITHUB_REF_NAME:-main}"
+          git pull --ff-only origin "$branch"
 
       - run: corepack enable
 
@@ -49,13 +55,30 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git commit -m "update disposable domains v$NEXT_VERSION"
-          git push
+          branch="${GITHUB_REF_NAME:-main}"
+
+          if ! git push origin "HEAD:$branch"; then
+            git fetch origin "$branch"
+            git rebase "origin/$branch"
+
+            if [ "$(git rev-list --count "origin/$branch"..HEAD)" = "0" ]; then
+              echo "PUBLISH_PACKAGE=false" >> "$GITHUB_ENV"
+              echo "Remote already contains this update"
+              exit 0
+            fi
+
+            git push origin "HEAD:$branch"
+          fi
+
+          echo "PUBLISH_PACKAGE=true" >> "$GITHUB_ENV"
 
       - uses: actions/setup-node@v6
+        if: env.PUBLISH_PACKAGE == 'true'
         with:
           registry-url: https://registry.npmjs.org
 
       - name: Publish package
+        if: env.PUBLISH_PACKAGE == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
