@@ -53,7 +53,7 @@ jobs:
           git add disposable.json disposable.txt package.json
 
           if git diff --cached --quiet; then
-            echo "No changes"
+            echo "No changes to commit"
             exit 0
           fi
 
@@ -68,7 +68,6 @@ jobs:
             git rebase "origin/$branch"
 
             if [ "$(git rev-list --count "origin/$branch"..HEAD)" = "0" ]; then
-              echo "PUBLISH_PACKAGE=false" >> "$GITHUB_ENV"
               echo "Remote already contains this update"
               exit 0
             fi
@@ -76,8 +75,21 @@ jobs:
             git push origin "HEAD:$branch"
           fi
 
-          echo "PUBLISH_PACKAGE=true" >> "$GITHUB_ENV"
+      - name: Check whether package needs publishing
+        id: publish_check
+        run: |
+          PACKAGE_VERSION="$(node -p 'require("./package.json").version')"
+          PUBLISHED_VERSIONS="$(npm view email-disposable versions --json)"
+          PUBLISH_PACKAGE="$(node -e '
+            const versions = JSON.parse(process.argv[1]);
+            if (!Array.isArray(versions)) throw new Error("Expected an array of published versions");
+            console.log(!versions.includes(process.argv[2]));
+          ' "$PUBLISHED_VERSIONS" "$PACKAGE_VERSION")"
+
+          echo "Package version: $PACKAGE_VERSION"
+          echo "Publish package: $PUBLISH_PACKAGE"
+          echo "publish=$PUBLISH_PACKAGE" >> "$GITHUB_OUTPUT"
 
       - name: Publish package
-        if: env.PUBLISH_PACKAGE == 'true'
+        if: steps.publish_check.outputs.publish == 'true'
         run: npm publish --access public --provenance
