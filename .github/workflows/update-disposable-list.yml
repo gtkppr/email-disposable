@@ -28,6 +28,12 @@ jobs:
           branch="${GITHUB_REF_NAME:-main}"
           git pull --ff-only origin "$branch"
 
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+
       - run: corepack enable
 
       - run: yarn install --immutable
@@ -72,19 +78,6 @@ jobs:
 
           echo "PUBLISH_PACKAGE=true" >> "$GITHUB_ENV"
 
-      - uses: actions/setup-node@v6
-        if: env.PUBLISH_PACKAGE == 'true'
-        with:
-          registry-url: https://registry.npmjs.org
-
       - name: Publish package
         if: env.PUBLISH_PACKAGE == 'true'
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          if [ -z "$NODE_AUTH_TOKEN" ]; then
-            echo "Missing NPM_TOKEN secret"
-            exit 1
-          fi
-
-          npm publish --access public --provenance
+        run: npm publish --access public --provenance
