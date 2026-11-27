@@ -13,7 +13,7 @@
     "disposable.json",
     "disposable.txt"
   ],
-  "version": "1.0.140",
+  "version": "1.0.141",
   "devDependencies": {
     "p-limit": "^7.2.0"
   },
